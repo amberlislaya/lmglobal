@@ -31,7 +31,7 @@ const Footer = () => {
 </span>
 ))}
 </div>
-<p className="text-[#b13636] text-[12px] md:text-[14px] leading-none p-[10px] md:p-[15px]">© 2023 Amberlis Laya, Todos los derechos reservados</p>
+<p className="text-[#b13636] text-[12px] md:text-[14px] leading-none p-[10px] md:p-[15px]">© Amberlis Laya, Todos los derechos reservados</p>
 </div>
 </footer>
 )

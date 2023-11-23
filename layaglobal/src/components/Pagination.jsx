@@ -2,7 +2,6 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { useParams, useNavigate } from "react-router-dom";
-import Logo from "../assets/google-pagination-logo.png";
 import { pagination } from "../utils/Constants";
 
 
@@ -42,7 +41,9 @@ const Pagination = ({ queries }) => {
 </span>
 </div>
 )}
-<img className="w-[250px] md:w-[300px]" src={Logo} />
+ <p className=" hidden md:block mr-12 mb-1 text-3xl text-red-500 font-bold justify-center items-center w-[250px] md:w-[300px]">
+    LayaaaaaaaaaaaaaGlobal
+  </p>
         {queries.nextPage && (
 <div className="absolute right-[-30px] md:right-[-40px] top-[10px]"
     onClick={() =>

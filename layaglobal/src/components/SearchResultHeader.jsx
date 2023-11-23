@@ -6,7 +6,7 @@ import { BiNews } from "react-icons/bi";
 import { RiVideoLine } from "react-icons/ri";
 import { SlTag } from "react-icons/sl";
 
-import Logo from "../assets/google-logo.png";
+import { SiOpensearch } from "react-icons/si";
 import SearchInput from "./SearchInput";
 import ProfileIcon from "./ProfileIcon";
 import { Context } from "../utils/ContextApi";
@@ -36,11 +36,9 @@ const SearchResultHeader = () => {
 <div className="flex items-center justify-between w-full">
 <div className="flex items-center grow">
 <Link to="/">
-<img
-className="hidden md:block w-[92px] mr-10"
-src={Logo}
-alt="Logo"
-/>
+  <p className=" hidden md:block w-[92px] mr-12 mb-1 text-2xl text-red-500 font-bold justify-center items-center">
+    LayaGlobal
+  </p>
 </Link>
 <SearchInput from="searchResult" />
 </div>
