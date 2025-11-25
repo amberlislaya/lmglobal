@@ -1,60 +1,171 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useNavigate, useParams } from "react-router-dom";
-import { RiEyeCloseLine } from "react-icons/ri";
 import { IoCameraOutline } from "react-icons/io5";
 import { MdSpatialAudio } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
 
-const SearchInput = () => {
+import { Context } from "../utils/ContextApi";
+import { fetchDataFromApi } from "../utils/api";
+
+const SearchInput = ({ showButtons = false }) => {
   const { query } = useParams();
   const [searchQuery, setSearchQuery] = useState(query || "");
+  const [isListening, setIsListening] = useState(false); 
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [loadingLucky, setLoadingLucky] = useState(false);
   const navigate = useNavigate();
+  
+  const fileInputRef = useRef(null);
+  const { setImageSearch } = useContext(Context);
+
+  useEffect(() => {
+     setSearchQuery(query || "");
+  }, [query]);
+
+  const performSearch = (text) => {
+      if (text?.length > 0) {
+        navigate(`/${text}/${1}`);
+      }
+  };
 
   const searchQueryHandler = (event) => {
-    if (event?.key === "Enter" && searchQuery?.length > 0) {
-      navigate(`/${searchQuery}/${1}`);
+    if (event?.key === "Enter") {
+      performSearch(searchQuery);
     }
   };
 
+  const handleLuckySearch = () => {
+      if (!searchQuery) return;
+      setLoadingLucky(true);
+      fetchDataFromApi({ q: searchQuery, start: 1 }).then((res) => {
+          setLoadingLucky(false);
+          if (res?.items?.[0]?.link) {
+              window.location.href = res.items[0].link;
+          } else {
+              performSearch(searchQuery);
+          }
+      }).catch((err) => {
+          setLoadingLucky(false);
+          performSearch(searchQuery);
+      });
+  };
+
+  const handleVoiceSearch = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "es-ES"; 
+    recognition.interimResults = true; 
+    recognition.continuous = false;
+
+    setIsListening(true);
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(result => result[0].transcript).join('');
+      setSearchQuery(transcript);
+
+      if (event.results[0].isFinal) {
+         setIsListening(false);
+         setIsProcessing(true);
+         setTimeout(() => {
+             performSearch(transcript);
+             setIsProcessing(false);
+         }, 1500); 
+      }
+    };
+    recognition.onerror = () => { setIsListening(false); setIsProcessing(false); };
+    recognition.onend = () => { if (!isProcessing) setIsListening(false); };
+  };
+
+  const handleCameraClick = () => fileInputRef.current.click();
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSearchQuery(file.name);
+      setImageSearch(true);
+      navigate(`/${file.name}/${1}`);
+    }
+  };
+
+  let placeholderText = "Busca en el universo...";
+  if (isListening) placeholderText = "Te estoy escuchando...";
+  if (isProcessing) placeholderText = "Buscando respuesta...";
+
   return (
-    <div
-      id="searchBox"
-      className="group h-[55px] w-full md:w-[584px] flex items-center gap-3 px-5 
-      rounded-full transition-all duration-300 ease-out
-      bg-white/5 border border-white/10 backdrop-blur-md shadow-lg
-      hover:bg-white/10 hover:shadow-cyan-500/20 hover:border-white/30
-      focus-within:bg-black/40 focus-within:shadow-[0_0_30px_rgba(34,211,238,0.2)] focus-within:border-cyan-500/50"
-    >
-      <AiOutlineSearch 
-        size={22} 
-        className="text-white/60 group-focus-within:text-cyan-400 transition-colors" 
-      />
-      
-      <input
-        type="text"
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyUp={searchQueryHandler}
-        value={searchQuery}
-        autoFocus
-        placeholder="Busca en el universo..."
-        className="grow outline-none bg-transparent text-white text-lg placeholder-white/30"
-      />
-      
-      <div className="flex items-center gap-4">
-        {searchQuery && (
-          <RiEyeCloseLine
-            size={24}
-            className="cursor-pointer text-white/60 hover:text-pink-500 transition-colors"
-            onClick={() => setSearchQuery("")}
-          />
+    <div className="flex flex-col items-center w-full">
+        <div
+        id="searchBox"
+        className={`group h-[55px] w-full md:w-[584px] flex items-center gap-3 px-5 
+        rounded-full transition-all duration-300 ease-out mb-8
+        bg-white/5 border border-white/10 backdrop-blur-md shadow-lg
+        hover:bg-white/10 hover:shadow-cyan-500/20 hover:border-white/30
+        focus-within:bg-black/40 focus-within:shadow-[0_0_30px_rgba(34,211,238,0.2)] focus-within:border-cyan-500/50
+        ${isListening ? "border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.6)] animate-pulse" : ""}
+        ${isProcessing ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.6)]" : ""}
+        `}
+        >
+        <AiOutlineSearch 
+            size={22} 
+            className={`cursor-pointer transition-colors ${isProcessing ? "text-green-400 animate-spin" : "text-white/60 hover:text-cyan-400"}`}
+            onClick={() => performSearch(searchQuery)} 
+        />
+        
+        <input
+            type="text"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyUp={searchQueryHandler}
+            value={searchQuery}
+            autoFocus
+            placeholder={placeholderText}
+            className="grow outline-none bg-transparent text-white text-lg placeholder-white/30"
+            disabled={isProcessing} 
+        />
+        
+        <div className="flex items-center gap-4">
+            <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+            />
+            <MdSpatialAudio 
+                className={`h-6 w-6 cursor-pointer transition-transform hover:scale-110 
+                ${isListening ? "text-red-500 scale-125" : "text-blue-400 hover:text-white"}`}
+                onClick={handleVoiceSearch}
+                title="Buscar por voz"
+            />
+            <IoCameraOutline 
+                className="h-6 w-6 cursor-pointer text-purple-400 hover:text-white transition-transform hover:scale-110"
+                onClick={handleCameraClick}
+                title="Subir imagen"
+            />
+        </div>
+        </div>
+
+        {/* --- SOLO BOTÓN ME SIENTO AFORTUNADO --- */}
+        {showButtons && (
+            <div className="flex flex-wrap justify-center gap-4">
+                <button 
+                    className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white/90 text-sm font-medium tracking-wide shadow-lg hover:bg-white/10 hover:shadow-pink-500/30 hover:border-pink-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
+                    onClick={handleLuckySearch}
+                    disabled={loadingLucky}
+                >
+                    {loadingLucky ? (
+                        <>
+                         <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                         Viajando...
+                        </>
+                    ) : (
+                        "Me siento afortunado"
+                    )}
+                </button>
+            </div>
         )}
-        <MdSpatialAudio 
-            className="h-6 w-6 cursor-pointer text-blue-400 hover:text-white transition-transform hover:scale-110" 
-        />
-        <IoCameraOutline 
-            className="h-6 w-6 cursor-pointer text-purple-400 hover:text-white transition-transform hover:scale-110"
-        />
-      </div>
     </div>
   );
 };

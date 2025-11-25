@@ -13,3 +13,6 @@ export const fetchDataFromApi = async (payload) => {
     });
     return data;
 };
+
+
+
