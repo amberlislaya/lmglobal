@@ -3,7 +3,6 @@ import { useContext, useState, useEffect } from "react";
 import { GoSearch } from "react-icons/go";
 import { BsImage } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
-import { RiVideoLine } from "react-icons/ri";
 import { SlTag } from "react-icons/sl";
 
 import SearchInput from "./SearchInput";
