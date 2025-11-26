@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
 // 2. Importamos el ícono de Gmail
 import { SiGmail } from "react-icons/si"; 
+import { FaRegImage } from "react-icons/fa";
+
 
 const HomeHeader = () => {
   const { currentUser } = useAuth();
@@ -16,7 +18,7 @@ const HomeHeader = () => {
   : "https://mail.google.com";
   
   return (
-    <header className="h-20 flex justify-between md:justify-end items-center gap-6 px-8 relative z-50">
+    <header className="h-20 flex justify-between md:justify-end items-center gap-5 px-8 relative z-50">
     <div className="flex gap-6 items-center">
     
     {/* Enlace a Gmail Real (Dinámico con Ícono) */}
@@ -27,7 +29,7 @@ const HomeHeader = () => {
     className="flex items-center gap-1 text-white/70 text-[14px] font-medium hover:text-cyan-300 cursor-pointer transition-colors tracking-wide"
     >
     {/* Ícono de Gmail */}
-    <SiGmail size={16} className="text-pink-500 transition-colors group-hover:text-cyan-300" />
+    <SiGmail size={16} className="text-blue-500 transition-colors group-hover:text-cyan-300" />
     
     </a>
     
@@ -36,7 +38,7 @@ const HomeHeader = () => {
     to="/" 
     className="text-white/70 text-[14px] font-medium hover:text-pink-300 cursor-pointer transition-colors tracking-wide"
     >
-    Imágenes
+    <FaRegImage size={16} className="text-yellow-500 transition-colors group-hover:text-cyan-300"/> 
     </Link>
     </div>
     
