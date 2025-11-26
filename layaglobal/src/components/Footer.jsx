@@ -39,7 +39,7 @@ const Footer = () => {
    )
   },
   "Novedades": {
-   title: "Futuro de Laya Global",
+   title: "Futuro de Laya",
    content: "• Integración profunda de Inteligencia Artificial Generativa (Gemini).\n• Motor de búsqueda optimizado para resultados en tiempo real.\n• Nueva interfaz de voz y reconocimiento visual.\n• Próximamente: Asistente personal Laya."
   },
   "Negocios": {
@@ -52,15 +52,15 @@ const Footer = () => {
   },
   "Privacidad": {
    title: "Política de Privacidad",
-   content: "En Laya Global, la seguridad es nuestra prioridad. Tus datos de navegación y consultas están encriptados. No comercializamos tu información personal con terceros."
+   content: "En Laya, la seguridad es nuestra prioridad. Tus datos de navegación y consultas están encriptados. No comercializamos tu información personal con terceros."
   },
   "Terminos": { 
    title: "Términos de Servicio",
-   content: "Al usar Laya Global, aceptas navegar con respeto y responsabilidad. Este proyecto es una demostración de innovación tecnológica y propiedad intelectual de Amberlis Laya Madera."
+   content: "Al usar Laya, aceptas navegar con respeto y responsabilidad. Este proyecto es una demostración de innovación tecnológica y propiedad intelectual de Amberlis Laya Madera."
   },
   "Configuración": {
    title: "Sistema",
-   content: "• Versión: Laya Global v2.0 (Aether Edition)\n• Motor: React + Vite + Firebase + Google AI\n• Región: Detectada automáticamente\n• Estado: Online"
+   content: "• Versión: Laya v2.0 (Aether Edition)\n• Motor: React + Vite + Firebase + Google AI\n• Región: Detectada automáticamente\n• Estado: Online"
   }
  };
  
